@@ -52,7 +52,7 @@ Fromt the above boxplots, it appears that females tend to have a higher frequenc
 Fit a mixed effects model with random intercepts for different subjects (gender and attitude being fixed effects)
 ```{r}
 # model fit
-lmm_1 <- lme(frequency ~ gender + attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
+lmm_1 = lme(frequency ~ gender + attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
 
 # summary
 summary(lmm_1)
@@ -98,7 +98,7 @@ pitch_df$frequency - fitted(lmm_1)
 Fit a mixed effects model with random intercepts for different subjects (gender, attitude, and gender*attitude being fixed effects)
 ```{r}
 # model fit
-lmm_2 <- lme(frequency ~ gender*attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
+lmm_2 = lme(frequency ~ gender*attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
 
 # summary
 summary(lmm_2)
@@ -117,3 +117,32 @@ anova(lmm_1_ml, lmm_2_ml)
 ```
 
 Since the p-value from the likelihood ratio test is > 0.05, we fail to reject the null hypothesis that the two models fit the data equally well. Because of this, it appears the interaction between gender and attitude is not significantly associated with pitch.
+
+
+#### 4.
+
+
+The model is handwritten.
+
+Fit the model with random intercepts and random slopes for attitude for different subjects (gender and attitude are also fixed effects) 
+```{r}
+# Random intercept and slope for attitude
+lmm_3 = lme(frequency ~ gender + attitude, random = ~ 1 + attitude | subject,  data = pitch_df, method = 'REML') 
+
+# Summary
+summary(lmm_3)
+```
+
+Var(Yi) is handwritten
+
+
+Fixed effect, random effect, and BLUP for first female subject in scenario 1 with polite attitude
+```{r}
+# fixed effects
+fixed.effects(lmm_3)
+
+# random effect
+ranef(lmm_3)
+```
+
+For the first female subject in scenario 1 with polite attitude, the fixed effect is 226.99, the random effect is -13.58, EBLUPs are -13.58 and -8.41e-07

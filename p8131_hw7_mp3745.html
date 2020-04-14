@@ -394,7 +394,7 @@ summary {
 <h4>2.</h4>
 <p>Fit a mixed effects model with random intercepts for different subjects (gender and attitude being fixed effects)</p>
 <pre class="r"><code># model fit
-lmm_1 &lt;- lme(frequency ~ gender + attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
+lmm_1 = lme(frequency ~ gender + attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
 
 # summary
 summary(lmm_1)</code></pre>
@@ -497,7 +497,7 @@ cov_yi</code></pre>
 <h4>3.</h4>
 <p>Fit a mixed effects model with random intercepts for different subjects (gender, attitude, and gender*attitude being fixed effects)</p>
 <pre class="r"><code># model fit
-lmm_2 &lt;- lme(frequency ~ gender*attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
+lmm_2 = lme(frequency ~ gender*attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
 
 # summary
 summary(lmm_2)</code></pre>
@@ -542,6 +542,61 @@ anova(lmm_1_ml, lmm_2_ml)</code></pre>
 ## lmm_1_ml     1  5 825.6363 837.7904 -407.8182                        
 ## lmm_2_ml     2  6 826.2508 840.8357 -407.1254 1 vs 2 1.385523  0.2392</code></pre>
 <p>Since the p-value from the likelihood ratio test is &gt; 0.05, we fail to reject the null hypothesis that the two models fit the data equally well. Because of this, it appears the interaction between gender and attitude is not significantly associated with pitch.</p>
+</div>
+<div id="section-3" class="section level4">
+<h4>4.</h4>
+<p>The model is handwritten.</p>
+<p>Fit the model with random intercepts and random slopes for attitude for different subjects (gender and attitude are also fixed effects)</p>
+<pre class="r"><code># Random intercept and slope for attitude
+lmm_3 = lme(frequency ~ gender + attitude, random = ~ 1 + attitude | subject,  data = pitch_df, method = 'REML') 
+
+# Summary
+summary(lmm_3)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: pitch_df 
+##        AIC      BIC    logLik
+##   810.0805 826.8416 -398.0402
+## 
+## Random effects:
+##  Formula: ~1 + attitude | subject
+##  Structure: General positive-definite, Log-Cholesky parametrization
+##             StdDev       Corr  
+## (Intercept) 24.458032213 (Intr)
+## attitudepol  0.003285569 0     
+## Residual    29.115372269       
+## 
+## Fixed effects: frequency ~ gender + attitude 
+##                  Value Std.Error DF   t-value p-value
+## (Intercept)  256.98691 15.154987 77 16.957250  0.0000
+## genderM     -108.79762 20.956235  4 -5.191659  0.0066
+## attitudepol  -20.00238  6.353495 77 -3.148248  0.0023
+##  Correlation: 
+##             (Intr) gendrM
+## genderM     -0.691       
+## attitudepol -0.210  0.000
+## 
+## Standardized Within-Group Residuals:
+##        Min         Q1        Med         Q3        Max 
+## -2.3564422 -0.5658319 -0.2011979  0.4617896  3.2997610 
+## 
+## Number of Observations: 84
+## Number of Groups: 6</code></pre>
+<p>Var(Yi) is handwritten</p>
+<p>Fixed effect, random effect, and BLUP for first female subject in scenario 1 with polite attitude</p>
+<pre class="r"><code># fixed effects
+fixed.effects(lmm_3)</code></pre>
+<pre><code>## (Intercept)     genderM attitudepol 
+##   256.98691  -108.79762   -20.00238</code></pre>
+<pre class="r"><code># random effect
+ranef(lmm_3)</code></pre>
+<pre><code>##    (Intercept)   attitudepol
+## F1  -13.575831 -8.408891e-07
+## F2   10.170522  1.499413e-07
+## F3    3.405308 -2.981919e-07
+## M3   27.960288  1.009764e-06
+## M4    4.739325  7.794162e-07
+## M7  -32.699612 -8.000404e-07</code></pre>
+<p>For the first female subject in scenario 1 with polite attitude, the fixed effect is 226.99, the random effect is -13.58, EBLUPs are -13.58 and -8.41e-07</p>
 </div>
 
 
