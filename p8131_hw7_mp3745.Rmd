@@ -28,3 +28,20 @@ scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 theme_set(theme_minimal() + theme(legend.position = "bottom"))
 ```
+
+#### 1.
+
+Read in the data
+```{r}
+pitch_df = read_csv("./data/HW7-politeness_data.csv")
+```
+
+Provide boxplots to show the relation between gender/attitude and pitch (ignoring di􏰀erent scenarios)
+```{r}
+pitch_df %>% 
+  group_by(gender, attitude) %>% 
+  ggplot(aes(x = gender, y = frequency, color = attitude)) + 
+  geom_boxplot()
+```
+
+Fromt the above boxplots, it appears that females tend to have a higher frequency than males. In addition, those with informal attitude may have a slightly higher pitch than those with polite attitude.
