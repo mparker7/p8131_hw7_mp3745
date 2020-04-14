@@ -45,3 +45,50 @@ pitch_df %>%
 ```
 
 Fromt the above boxplots, it appears that females tend to have a higher frequency than males. In addition, those with informal attitude may have a slightly higher pitch than those with polite attitude.
+
+
+#### 2.
+
+Fit a mixed effects model with random intercepts for different subjects (gender and attitude being fixed effects)
+```{r}
+# model fit
+lmm_1 <- lme(frequency ~ gender + attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
+
+# summary
+summary(lmm_1)
+```
+
+Covariance matrix for Yi
+```{r}
+# sigma b squared
+sigma_b_sq = as.numeric(VarCorr(lmm_1)[1])
+
+# sigma squared
+sigma_sq = as.numeric(VarCorr(lmm_1)[2])
+
+# Covariance matrix for Yi
+cov_yi = matrix(
+  c(sigma_b_sq + sigma_sq, sigma_b_sq, "...", sigma_b_sq, 
+    sigma_b_sq, sigma_b_sq + sigma_sq, "...", sigma_b_sq, 
+    "...", "...", "...", "...", 
+    sigma_b_sq, sigma_b_sq, "...", sigma_b_sq + sigma_sq), 4, 4
+)
+
+cov_yi
+```
+
+Covariance matrix for REML estimates of fixed effects
+```{r}
+vcov(lmm_1)
+```
+
+BLUPs for subject specific intercepts
+```{r}
+random.effects(lmm_1)
+```
+
+Residuals
+```{r}
+pitch_df$frequency - fitted(lmm_1)
+```
+
