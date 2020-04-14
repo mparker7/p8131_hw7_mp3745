@@ -493,6 +493,56 @@ cov_yi</code></pre>
 ## attr(,&quot;label&quot;)
 ## [1] &quot;Fitted values&quot;</code></pre>
 </div>
+<div id="section-2" class="section level4">
+<h4>3.</h4>
+<p>Fit a mixed effects model with random intercepts for different subjects (gender, attitude, and gender*attitude being fixed effects)</p>
+<pre class="r"><code># model fit
+lmm_2 &lt;- lme(frequency ~ gender*attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
+
+# summary
+summary(lmm_2)</code></pre>
+<pre><code>## Linear mixed-effects model fit by REML
+##  Data: pitch_df 
+##        AIC     BIC    logLik
+##   799.8018 814.094 -393.9009
+## 
+## Random effects:
+##  Formula: ~1 | subject
+##         (Intercept) Residual
+## StdDev:    24.46382 29.04716
+## 
+## Fixed effects: frequency ~ gender * attitude 
+##                          Value Std.Error DF   t-value p-value
+## (Intercept)          260.68571 15.481307 76 16.838740  0.0000
+## genderM             -116.19524 21.893875  4 -5.307203  0.0061
+## attitudepol          -27.40000  8.964149 76 -3.056620  0.0031
+## genderM:attitudepol   14.79524 12.677221 76  1.167073  0.2468
+##  Correlation: 
+##                     (Intr) gendrM atttdp
+## genderM             -0.707              
+## attitudepol         -0.290  0.205       
+## genderM:attitudepol  0.205 -0.290 -0.707
+## 
+## Standardized Within-Group Residuals:
+##        Min         Q1        Med         Q3        Max 
+## -2.2344163 -0.5454437 -0.1646159  0.4697182  3.1800944 
+## 
+## Number of Observations: 84
+## Number of Groups: 6</code></pre>
+<p>Compare the two models by likelihood ratio test</p>
+<pre class="r"><code># model 1 with ML estimate
+lmm_1_ml = lme(frequency ~ gender + attitude, random = ~1 | subject,  data = pitch_df, method = 'ML')
+
+# model 2 with ML estimate
+lmm_2_ml = lme(frequency ~ gender*attitude, random = ~1 | subject,  data = pitch_df, method = 'ML') 
+
+# Compare
+anova(lmm_1_ml, lmm_2_ml)</code></pre>
+<pre><code>##          Model df      AIC      BIC    logLik   Test  L.Ratio p-value
+## lmm_1_ml     1  5 825.6363 837.7904 -407.8182                        
+## lmm_2_ml     2  6 826.2508 840.8357 -407.1254 1 vs 2 1.385523  0.2392</code></pre>
+<p>Since the p-value from the likelihood ratio test is &gt; 0.05, we fail to reject the null hypothesis that the two models fit the data equally well. Because of this, it appears the interaction between gender and attitude is not significantly associated with pitch.</p>
+</div>
 
 
 

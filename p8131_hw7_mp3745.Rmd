@@ -92,3 +92,28 @@ Residuals
 pitch_df$frequency - fitted(lmm_1)
 ```
 
+
+#### 3.
+
+Fit a mixed effects model with random intercepts for different subjects (gender, attitude, and gender*attitude being fixed effects)
+```{r}
+# model fit
+lmm_2 <- lme(frequency ~ gender*attitude, random = ~1 | subject,  data = pitch_df, method = 'REML') 
+
+# summary
+summary(lmm_2)
+```
+
+Compare the two models by likelihood ratio test
+```{r}
+# model 1 with ML estimate
+lmm_1_ml = lme(frequency ~ gender + attitude, random = ~1 | subject,  data = pitch_df, method = 'ML')
+
+# model 2 with ML estimate
+lmm_2_ml = lme(frequency ~ gender*attitude, random = ~1 | subject,  data = pitch_df, method = 'ML') 
+
+# Compare
+anova(lmm_1_ml, lmm_2_ml)
+```
+
+Since the p-value from the likelihood ratio test is > 0.05, we fail to reject the null hypothesis that the two models fit the data equally well. Because of this, it appears the interaction between gender and attitude is not significantly associated with pitch.
